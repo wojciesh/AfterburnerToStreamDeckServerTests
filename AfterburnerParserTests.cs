@@ -246,7 +246,15 @@ namespace AfterburnerToStreamDeckServerTests
             var measurementsLineNotStartingWith80 = "81, 07-12-2024 23:49:46, 46.000";
 
             // Act
-            AfterburnerParser.ExtractMeasurements(measurementsLineNotStartingWith80, measurementTypes);
+            try
+            {
+                AfterburnerParser.ExtractMeasurements(measurementsLineNotStartingWith80, measurementTypes);
+            }
+            catch (FormatException e)
+            {
+                Assert.AreEqual("Invalid measurements format (not starting with \"80\") in line: 81, 07-12-2024 23:49:46, 46.000", e.Message);
+                throw;
+            }
         }
 
         [TestMethod]
@@ -261,7 +269,15 @@ namespace AfterburnerToStreamDeckServerTests
             var measurementsLine = "";
 
             // Act
-            AfterburnerParser.ExtractMeasurements(measurementsLine, measurementTypes);
+            try
+            {
+                AfterburnerParser.ExtractMeasurements(measurementsLine, measurementTypes);
+            }
+            catch (ArgumentException e)
+            {
+                Assert.AreEqual("'measurementsLine' cannot be null or whitespace. (Parameter 'measurementsLine')", e.Message);
+                throw;
+            }
         }
 
         [TestMethod]
@@ -272,7 +288,15 @@ namespace AfterburnerToStreamDeckServerTests
             var measurementsLine = "80, 07-12-2024 23:49:46, 46.000";
 
             // Act
-            AfterburnerParser.ExtractMeasurements(measurementsLine, null);
+            try
+            {
+                AfterburnerParser.ExtractMeasurements(measurementsLine, null);
+            }
+            catch (ArgumentNullException e)
+            {
+                Assert.AreEqual("Value cannot be null. (Parameter 'measurementTypes')", e.Message);
+                throw;
+            }
         }
     }
 }
