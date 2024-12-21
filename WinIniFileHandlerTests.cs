@@ -6,9 +6,9 @@ namespace AfterburnerToStreamDeckServerTests
     [TestClass]
     public class WinIniFileHandlerTests
     {
-        private static string? TestIniFilePath;  // will be deleted!
-        private WinIniFileHandler _iniFileHandler;
-        
+        private static string testIniFilePath = "";  // this file will be deleted!
+        private static IIniFileHandler iniFileHandler = new WinIniFileHandler();
+
         private static readonly object _iniFileLock = new object();
 
         [TestInitialize]
@@ -19,24 +19,24 @@ namespace AfterburnerToStreamDeckServerTests
                 var currentAppDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                 if (currentAppDir == null || !Directory.Exists(currentAppDir))
                     throw new AssertFailedException("Error getting current app directory");
-                TestIniFilePath = Path.Combine(currentAppDir, "test-to-delete.ini");
+                testIniFilePath = Path.Combine(currentAppDir, "test-to-delete.ini");
 
                 RecreateTestIniFile();
             }
 
-            _iniFileHandler = new WinIniFileHandler();
+            iniFileHandler = new WinIniFileHandler();
         }
 
         private static void RecreateTestIniFile()
         {
             try
             {
-                if (File.Exists(TestIniFilePath))
+                if (File.Exists(testIniFilePath))
                 {
-                    File.Delete(TestIniFilePath);
+                    File.Delete(testIniFilePath);
                 }
                 // write sample values for our tests:
-                File.WriteAllText(TestIniFilePath, "[Settings]\nUsername=TestUser\nPassword=TestPassword\n");
+                File.WriteAllText(testIniFilePath, "[Settings]\nUsername=TestUser\nPassword=TestPassword\n");
             }
             catch (Exception ex)
             {
@@ -52,9 +52,9 @@ namespace AfterburnerToStreamDeckServerTests
             {
                 try
                 {
-                    if (File.Exists(TestIniFilePath))
+                    if (File.Exists(testIniFilePath))
                     {
-                        File.Delete(TestIniFilePath);
+                        File.Delete(testIniFilePath);
                     }
                 }
                 catch (Exception ex)
@@ -76,7 +76,7 @@ namespace AfterburnerToStreamDeckServerTests
                 var expectedValue = "TestUser2";
                 try
                 {
-                    _iniFileHandler.SetValue(section, key, expectedValue, TestIniFilePath);
+                    iniFileHandler.SetValue(section, key, expectedValue, testIniFilePath);
                 }
                 catch (Exception ex)
                 {
@@ -85,7 +85,7 @@ namespace AfterburnerToStreamDeckServerTests
                 }
 
                 // Act
-                var actualValue = _iniFileHandler.GetValue(section, key, TestIniFilePath);
+                var actualValue = iniFileHandler.GetValue(section, key, testIniFilePath);
 
                 // Assert
                 Assert.AreEqual(expectedValue, actualValue);
@@ -102,7 +102,7 @@ namespace AfterburnerToStreamDeckServerTests
                 var key = "NonExistentKey";
 
                 // Act
-                var actualValue = _iniFileHandler.GetValue(section, key, TestIniFilePath);
+                var actualValue = iniFileHandler.GetValue(section, key, testIniFilePath);
 
                 // Assert
                 Assert.AreEqual(string.Empty, actualValue);
@@ -120,8 +120,8 @@ namespace AfterburnerToStreamDeckServerTests
                 var expectedValue = "NewValue";
 
                 // Act
-                _iniFileHandler.SetValue(section, key, expectedValue, TestIniFilePath);
-                var actualValue = _iniFileHandler.GetValue(section, key, TestIniFilePath);
+                iniFileHandler.SetValue(section, key, expectedValue, testIniFilePath);
+                var actualValue = iniFileHandler.GetValue(section, key, testIniFilePath);
 
                 // Assert
                 Assert.AreEqual(expectedValue, actualValue);
@@ -138,12 +138,12 @@ namespace AfterburnerToStreamDeckServerTests
                 var key = "ExistingKey";
                 var initialValue = "InitialValue";
                 var updatedValue = "UpdatedValue";
-                _iniFileHandler.SetValue(section, key, initialValue, TestIniFilePath);
-                Assert.AreEqual(initialValue, _iniFileHandler.GetValue(section, key, TestIniFilePath));
+                iniFileHandler.SetValue(section, key, initialValue, testIniFilePath);
+                Assert.AreEqual(initialValue, iniFileHandler.GetValue(section, key, testIniFilePath));
 
                 // Act
-                _iniFileHandler.SetValue(section, key, updatedValue, TestIniFilePath);
-                var actualValue = _iniFileHandler.GetValue(section, key, TestIniFilePath);
+                iniFileHandler.SetValue(section, key, updatedValue, testIniFilePath);
+                var actualValue = iniFileHandler.GetValue(section, key, testIniFilePath);
 
                 // Assert
                 Assert.AreEqual(updatedValue, actualValue);
