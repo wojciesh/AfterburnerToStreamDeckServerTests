@@ -100,7 +100,7 @@ namespace AfterburnerToStreamDeckServerTests.abconfig
         {
             try
             {
-                var defaultConfigProvider = new AfterburnerConfig(null);
+                var defaultConfigProvider = new AfterburnerConfig();
                 Assert.IsTrue(defaultConfigProvider.IsConfigFileValid());
             }
             catch (ArgumentException)
