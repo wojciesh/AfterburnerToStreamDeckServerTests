@@ -1,42 +1,38 @@
 ﻿using AfterburnerViewerServerWin.abconfig;
 using System.Reflection;
 
-namespace AfterburnerToStreamDeckServerTests.ini
+namespace AfterburnerToStreamDeckServerTests.abconfig
 {
     [TestClass]
+    [DoNotParallelize]
     public class AfterburnerConfigTests
     {
         // this file will copied for tests to testConfigFilePath
         private static string toCopyConfigFilePath = Path.Combine(
-            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException("Assembly location is null"),
             "abconfig",
             "MSIAfterburner_COPY_FOR_TESTS.cfg");
 
         // this file will be overwritten and deleted!
         private static string testConfigFilePath = Path.Combine(
-            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+            Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? throw new InvalidOperationException("Assembly location is null"),
             "abconfig",
             "test-config-to-delete.cfg");
 
         private static IAfterburnerConfig? configProvider;
 
-        private static readonly object _testLock = new object();
-
         [TestInitialize]
         public void Setup()
         {
-            lock (_testLock)
-            {
-                //var currentAppDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                //if (currentAppDir == null || !Directory.Exists(currentAppDir))
-                //    throw new AssertFailedException("Error getting current app directory");
-                //testConfigFilePath = Path.Combine(currentAppDir, "test-to-delete.ini");
+            //var currentAppDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //if (currentAppDir == null || !Directory.Exists(currentAppDir))
+            //    throw new AssertFailedException("Error getting current app directory");
+            //testConfigFilePath = Path.Combine(currentAppDir, "test-to-delete.ini");
 
-                RecreateTestConfigFile();
+            RecreateTestConfigFile();
 
-                configProvider = new AfterburnerConfig(testConfigFilePath);
-                Assert.IsNotNull(configProvider);
-            }
+            configProvider = new AfterburnerConfig(testConfigFilePath);
+            Assert.IsNotNull(configProvider);
         }
 
         private static void RecreateTestConfigFile()
@@ -52,23 +48,20 @@ namespace AfterburnerToStreamDeckServerTests.ini
             }
         }
 
-        [TestCleanup]
-        public void Cleanup()
+        [ClassCleanup(ClassCleanupBehavior.EndOfClass)]
+        public static void Cleanup()
         {
-            lock (_testLock)
+            try
             {
-                try
+                if (File.Exists(testConfigFilePath))
                 {
-                    if (File.Exists(testConfigFilePath))
-                    {
-                        File.Delete(testConfigFilePath);
-                    }
+                    File.Delete(testConfigFilePath);
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error deleting test config file: {ex.Message}");
-                    throw new AssertFailedException("Error deleting test config file on cleanup", ex);
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting test config file: {ex.Message}");
+                throw new AssertFailedException("Error deleting test config file on cleanup", ex);
             }
         }
 
@@ -136,4 +129,3 @@ namespace AfterburnerToStreamDeckServerTests.ini
         }
     }
 }
-    
