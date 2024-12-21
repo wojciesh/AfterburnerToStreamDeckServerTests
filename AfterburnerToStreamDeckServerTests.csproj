@@ -8,6 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="abconfig\MSIAfterburner_COPY_FOR_TESTS.cfg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="abconfig\MSIAfterburner_COPY_FOR_TESTS.cfg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
     <PackageReference Include="MSTest" Version="3.6.1" />
   </ItemGroup>
