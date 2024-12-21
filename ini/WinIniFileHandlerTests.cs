@@ -1,7 +1,7 @@
 ﻿using AfterburnerViewerServerWin.ini;
 using System.Reflection;
 
-namespace AfterburnerToStreamDeckServerTests
+namespace AfterburnerToStreamDeckServerTests.ini
 {
     [TestClass]
     public class WinIniFileHandlerTests
