@@ -24,11 +24,6 @@ namespace AfterburnerToStreamDeckServerTests.abconfig
         [TestInitialize]
         public void Setup()
         {
-            //var currentAppDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //if (currentAppDir == null || !Directory.Exists(currentAppDir))
-            //    throw new AssertFailedException("Error getting current app directory");
-            //testConfigFilePath = Path.Combine(currentAppDir, "test-to-delete.ini");
-
             RecreateTestConfigFile();
 
             configProvider = new AfterburnerConfig(testConfigFilePath);
